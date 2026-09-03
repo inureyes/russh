@@ -227,7 +227,6 @@ impl Preferred {
             Algorithm::Rsa {
                 hash: Some(HashAlg::Sha256),
             },
-            Algorithm::Rsa { hash: None },
         ]),
         cipher: Cow::Borrowed(CIPHER_ORDER),
         mac: Cow::Borrowed(SAFE_HMAC_ORDER),
@@ -976,13 +975,12 @@ mod tests {
         let cert = host_cert(&rsa_key, &ca);
         let keys = vec![rsa_key];
 
-        // Default preferences allow all three variants, in preference order.
+        // Default preferences intentionally exclude the SHA-1 ssh-rsa variant.
         assert_eq!(
             server_certificate_names(&Preferred::DEFAULT, std::slice::from_ref(&cert), &keys),
             vec![
                 "rsa-sha2-512-cert-v01@openssh.com".to_string(),
                 "rsa-sha2-256-cert-v01@openssh.com".to_string(),
-                "ssh-rsa-cert-v01@openssh.com".to_string(),
             ]
         );
 
